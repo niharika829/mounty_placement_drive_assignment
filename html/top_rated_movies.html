@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<head>
+        <title>CINOMORA||TOP RATED MOVIES</title>
+        <link rel="icon" href="../images/Capture.jpg" >
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+		<link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
+        <style>
+              body{
+                /* The image used */
+                background-image: url("../images/provide.jpg");
+
+                /* Set a specific height */
+                min-height: 550px;
+
+                /* Create the parallax scrolling effect */
+                background-attachment: fixed;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+              }
+
+
+              /*styling for progress bar*/
+                .progress {
+                height: 35px;
+              }
+              .progress .skill {
+                font: normal 12px "Open Sans Web";
+                line-height: 35px;
+                padding: 0;
+                margin: 0 0 0 20px;
+                text-transform: uppercase;
+              }
+              .progress .skill .val {
+                float: right;
+                font-style: normal;
+                margin: 0 20px 0 0;
+              }
+              .progress-bar {
+                text-align: left;
+              }
+
+              /*jumbotron background*/
+              .bg-cover {
+                   background-image: url('../images/Background.jpg');
+                   background-attachment: fixed;
+                   background-position: center;
+                   background-repeat: no-repeat;
+                   background-size: cover;
+                   opacity: 0.7;
+                   color:white;
+               }
+
+               /*conditional styling for image hover*/
+               .active{
+                 border:4px solid black;
+               }
+               .notactive{
+                 border:4px solid red;
+               }
+
+
+               /*styling for verical sidebar*/
+               .sidenav {
+                 height: 100%;
+                 width: 0;
+                 position: fixed;
+                 z-index: 1;
+                 top: 0;
+                 left: 0;
+                 background-color: #111;
+                 overflow-x: hidden;
+                 transition: 0.5s;
+                 padding-top: 60px;
+               }
+
+               .sidenav a {
+                 padding: 8px 8px 8px 32px;
+                 text-decoration: none;
+                 font-size: 25px;
+                 color: #818181;
+                 display: block;
+                 transition: 0.3s;
+               }
+
+               .sidenav a:hover {
+                 color: #f1f1f1;
+               }
+
+               .sidenav .closebtn {
+                 position: absolute;
+                 top: 0;
+                 right: 25px;
+                 font-size: 36px;
+                 margin-left: 50px;
+               }
+
+              /*styling for pushing the elements when sidebar is opened*/
+               #main {
+                 transition: margin-left .5s;
+                 padding: 16px;
+               }
+
+              /*media queries*/
+               @media screen and (max-height: 450px) {
+                 .sidenav {padding-top: 15px;}
+                 .sidenav a {font-size: 18px;}
+               }
+          </style>
+</head>
+<body>
+        <div id="app">
+              <posts ></posts>
+        </div>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
+
+
+        <script>
+
+            Vue.component('posts', {
+
+                          template:
+                           `<div>
+                                  <div id="mySidenav" class="sidenav"><br>
+                                        <a href="javascript:void(0)" class="closebtn" @click="closeNav()">&times;</a>
+                                        <a href="../cinomora.html" style="font-family: 'Monoton';">HOME</a>
+                                        <a href="upcoming_movies.html" style="font-family: 'Monoton';font-size:22px;">UPCOMING MOVIES</a>
+                                        <a href="detailed_movie_info.html" style="font-family: 'Monoton';font-size:25px;">DETAILED MOVIE INFO</a>
+                                        <fieldset style="border:2px solid white;">
+                                              <a href="#" style="font-family: 'Monoton';">SEARCH MOVIES</a>
+                                              <a><label for="movie_name" style="font-family: 'Monoton';">ENTER MOVIE NAME</label></a>
+                                              <a><input placeholder="enter the movie name"style="width:90%"id="movie_name"v-model="search" type="search" ></a>
+                                              <a><label for="movie_year" style="font-family: 'Monoton';">ENTER RELEASE YEAR</label></a>
+                                              <a><input placeholder="enter the year "style="width:90%"v-model="release" id ="movie_year"type="search" ></a>
+                                              <a> <button @click="find" class="btn btn-md btn-outline-warning" style="font-family: 'Monoton';">search</button></a>
+                                        </fieldset>
+                                 </div>
+                                <div id="main" >
+                                       <span style="font-size:30px;cursor:pointer;color:white;font-family: 'Monoton';"  @click="openNav()" >&#9776; {{name}}</span>
+                                       <div class="container-fluid" >
+                                                  <div  v-for="post in posts" :key="post.id">
+                                                           <div class="jumbotron bg-cover">
+                                                                <h3 ><span style="font-family: 'Monoton';">Id:-</span>{{post.id}}</h3>
+                                                                 <h3><span style="font-family: 'Monoton';">Movie:-</span><span>{{post.original_title}}</span><span>({{post.release_date}})</span></h3>
+                                                                  <div class="container">
+                                                                         <div class="row">
+                                                                               <div class="col-md-3">
+                                                                                     <img :src="'https://image.tmdb.org/t/p/w400' + post.backdrop_path" width="95%" height="60%" style="border-radius:2% 50%;" :class="[isactive ? 'active' : 'notactive']"  @mouseover="mouseOver_backdropimage" @mouseleave="mouseLeave_backdropimage"/>
+                                                                               </div>
+                                                                              <div class="col-md-3">
+                                                                                     <img :src="'https://image.tmdb.org/t/p/w200' + post.poster_path" height="60%" style="border-radius:2% 50%;" :class="[isposter ? 'active' : 'notactive']"  @mouseover="mouseOver_posterimage" @mouseleave="mouseLeave_posterimage"/>
+                                                                               </div>
+                                                                               <div class="col-md-6">
+                                                                                     <h1 style="font-family: 'Monoton';">OVERVIEW:-</h1>
+                                                                                     <p>{{post.overview}}</p>
+                                                                                     <h4 style="font-family: 'Monoton';">ADULT MOVIE<i class="em em-underage" aria-role="presentation" aria-label="NO ONE UNDER EIGHTEEN SYMBOL"></i>:-</h4>
+                                                                                     <p>{{post.adult}}</p>
+                                                                                     <h4 ><span style="font-family: 'Monoton';">POPULARITY:-</span>{{post.popularity}}%</h4>
+                                                                                     <div class="progress skill-bar ">
+                                                                                         <div class="progress-bar progress-bar-success" role="progressbar" :aria-valuenow="post.popularity" aria-valuemin="0" aria-valuemax="100" :style="{width: post.popularity + '%'}">
+                                                                                                   <span class="skill">{{post.popularity}}%</span>
+                                                                                         </div>
+                                                                                     </div>
+                                                                                     <h4  ><span style="font-family: 'Monoton';">VOTE AVERAGE:-</span>{{post.vote_average}}/10</h4>
+                                                                                     <div class="progress skill-bar ">
+                                                                                         <div class="progress-bar progress-bar-success" role="progressbar" :aria-valuenow="post.vote_average" aria-valuemin="0" aria-valuemax="100" :style="{width: post.vote_average*10 + '%'}">
+                                                                                                   <span class="skill">{{post.vote_average}}</span>
+                                                                                         </div>
+                                                                                     </div>
+                                                                                     <div>&nbsp;</div>
+
+                                                                                      <div>
+																					  <i class="em em-heart" style='font-size:80px;' :title='post.vote_count'aria-role="presentation" aria-label="BIRD"></i>
+																					  <i class="em em-studio_microphone" :title='post.original_language'style='font-size:80px;' aria-role="presentation" aria-label=""></i>
+                                                                                        
+                                                                                      </div>
+                                                                                </div>
+                                                                        </div>
+                                                                 </div>
+                                                          </div>
+                                                  </div>
+                                          </div>
+                              </div>
+                          </div>`,
+
+                          data() {
+
+                              return {
+                                 posts: [],
+                                 name:"TOP RATED MOVIES",
+                                 message:" ",
+                                 search:" ",
+                                 release:" ",
+                                  isactive:false,
+                                  isposter:false
+                              }
+
+
+                          },
+
+
+
+                          methods: {
+
+                                      find(){
+                                                axios.get("https://api.themoviedb.org/3/search/movie?api_key=a01f399cff218cc8d9fe424eebe24a3a&language=en-US&query="+this.search+"&page=1&include_adult=false&primary_release_year="+this.release).then(posts =>{
+                                                      this.message = posts.data
+                                                      console.log(this.message.results);
+                                                      this.posts =this.message.results;
+                                                });
+                                                console.log(this.search);
+                                        },
+                                      mouseOver_backdropimage: function(){
+                                                this.isactive = true;
+                                        },
+                                      mouseOver_posterimage: function(){
+                                                this.isposter = true;
+                                        },
+                                      mouseLeave_backdropimage: function(){
+                                                this.isactive = false;
+                                      },
+                                      mouseLeave_posterimage: function(){
+                                                this.isposter = false;
+                                      },
+                                      openNav() {
+                                                document.getElementById("mySidenav").style.width = "200px";
+                                                document.getElementById("main").style.marginLeft = "200px";
+                                                document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+                                      },
+                                      closeNav() {
+                                                document.getElementById("mySidenav").style.width = "0";
+                                                document.getElementById("main").style.marginLeft= "0";
+                                                document.body.style.backgroundColor = "white";
+                                      }
+
+                        },
+                        created(){
+
+                          axios.get("https://api.themoviedb.org/3/movie/top_rated?api_key=a01f399cff218cc8d9fe424eebe24a3a&language=en-US&page=1").then(posts =>{
+                                this.message = posts.data
+                                console.log(this.message.results);
+                                this.posts =this.message.results;
+                          });
+                        }
+            });
+
+
+
+
+
+            let vm = new Vue({
+
+                el: '#app',
+
+            })
+
+
+
+        </script>
+</body>
+</html>
